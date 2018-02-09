@@ -1,0 +1,35 @@
+sankit@student.ethz.ch
+kediap@student.ethz.ch
+hofersim@student.ethz.ch
+
+Preprocessing
+removezerovoxels, cubeslices, cubesizes=10*10*10and8*8*8
+
+Features
+variance, mutualinformationscore, selectkbest, 
+
+Model
+Logisticregression, linearsvm, randomforrestclassifier, averaging
+
+Description
+1. Preprocessing:
+We looked at the voxel intensities along each axes and found that
+"arr[40:120,80:160,40:120]" has maximum voxel intensity. We ran a few times with different ranges and found that these (80*80*80) pixels were producing the best result, both on the given test set as well as on K-fold cross validation.
+We divided the above chosen cube of voxels into smaller cubes. For age and health, each cube is of dimension (10*10*10), we calculated variance in each cube. For gender, each cube is of dimension (8*8*8) and considered both the mean and variance in each cube.
+
+2. Feature selection:
+After preprocessing, we were left with 512 (=8*8*8) features for each sample for age and health, and 1000 (=10*10*10) features for each sample for gender. We did further reduction of feature space for age and health using mutual information score on these features, took 195 features with best mutual information score. Again, cross validation helped in deciding the number 195. For gender, cross validation showed that the whole feature set, without mutual information score, was giving better score.
+
+3. Training and Final prediction:
+We trained 3 different models, then averaged their predictions to predict the final gender, age and health status of brain. This reduced the variance of the result, without increasing the bias. The averaged model performed better than all the models did individually, as expected. We tried multi-label classification also (considered pair of labels at a time, doing multi-class classification and in the end taking vote for final prediction for each label), but one classifier each class gave us better results. The models that we used are:
+	a. Logistic Regressor
+	b. SVM with linear kernel
+	c. Random Forest Classifier with 100 estimators.
+
+To choose the parameters (kernel, number of estimators), we used cross validation.
+Because of the Random Forrest Classifier, the final result has an element of non-determinism, but the variation is very less on multiple runs.
+
+4. Validation:
+We did K-fold cross validation, with K = 10, to decide on which models to use, and their hyperparameters. We used the combination which minimized the cross validation hamming loss.
+
+ 

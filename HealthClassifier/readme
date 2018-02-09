@@ -1,0 +1,35 @@
+sankit@student.ethz.ch
+kediap@student.ethz.ch
+hofersim@student.ethz.ch
+
+Preprocessing
+removezerovoxels, cubeslices, cubesize=10*10*10 
+
+Features
+variance, mutualinformationscore, selectkbest, 
+
+Model
+L1logisticregression, linearsvm, randomforrestclassifier, averaging
+
+Description
+1. Preprocessing:
+We looked at the voxel intensities along each axes and found that
+"arr[40:120,80:160,40:120]" has maximum voxel intensity. We ran a few times with different ranges and found that these (80*80*80) pixels were producing the best result, both on the given test set as well as on K-fold cross validation.
+We divided the above chosen cube of voxels into smaller cubes, each of dimension (10*10*10), and considered the variance in each cube. We tried other measure like mean and third moment, but cross validation proved that variance was giving the best result.
+
+2. Feature selection:
+After preprocessing, we were left with 512 (=8*8*8) features for each sample. We did further reduction of feature space using mutual information score on these features, took 195 features with best mutual information score. Again, cross validation helped in deciding the number 195.
+
+3. Training and Final prediction:
+We trained 3 different models, then averaged their predictions to predict the final health status of brain. This reduced the variance of the result, without increasing the bias. The averaged model performed better than all the models did individually, as expected. The models that we used are:
+	a. L1 Logistic Regressor
+	b. SVM with linear kernel
+	c. Random Forest Classifier with 100 estimators.
+
+To choose the parameters (regularization parameter, kernel, number of estimators), we did cross validation.
+Because of the Random Forrest Classifier, the final result has an element of non-determinism, but the variation is very less on multiple runs.
+
+4. Validation:
+We did K-fold cross validation, with K = 10, to decide on which models to use, and their hyperparameters. We used the combination which minimized the cross validation log loss.
+
+ 
